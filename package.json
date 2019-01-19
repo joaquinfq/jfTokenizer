@@ -1,0 +1,16 @@
+{
+    "name": "jf-tokenizer",
+    "description": "Transform a string in tokens",
+    "version": "0.1.0",
+    "author": "Joaquín Fernández <public@joaquinfernandez.net>",
+    "license": "MIT",
+    "main": "src/Tokenizer.js",
+    "homepage": "https://github.com/joaquinfq/jfTokenizer#readme",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/joaquinfq/jfTokenizer.git"
+    },
+    "bugs": {
+        "url": "https://github.com/joaquinfq/jfTokenizer/issues"
+    }
+}

@@ -1,11 +1,11 @@
-const jfTokenizerList      = require('./List');
+const jfNode               = require('jf-node');
 const jfTokenizerTokenBase = require('./token/Base');
 /**
  * Listado de clases de tokens registradas.
  *
  * @type {object}
  */
-const tokens = {
+const tokens               = {
     '' : jfTokenizerTokenBase
 };
 /**
@@ -22,12 +22,56 @@ module.exports = class Tokenizer
     constructor()
     {
         /**
-         * Listado de tokens encontrados.
+         * Primer token encontrado.
          *
-         * @property tokens
-         * @type     {jf.tokenizer.List}
+         * @property first
+         * @type     {jf.Node|null}
          */
-        this.tokens = new jfTokenizerList();
+        this.first = null;
+        /**
+         * Último token encontrado.
+         *
+         * @property last
+         * @type     {jf.Node|null}
+         */
+        this.last = null;
+    }
+
+    /**
+     * Iterador que permite usar un bucle `for..of` para iterar sobre los tokens.
+     *
+     * @return {Object} Configuración a usar por el iterador.
+     */
+    [Symbol.iterator]()
+    {
+        let _node = this.first;
+
+        return {
+            next()
+            {
+                let _current = _node;
+                if (_node)
+                {
+                    _node = _node.next;
+                }
+
+                return {
+                    done  : !_current,
+                    value : _current
+                };
+            }
+        };
+    }
+
+    /**
+     * Realiza un volcado por pantalla de los tokens encontrados.
+     */
+    dump()
+    {
+        for (const _node of this)
+        {
+            _node.data.dump(10);
+        }
     }
 
     /**
@@ -35,24 +79,31 @@ module.exports = class Tokenizer
      *
      * @param {string} text Texto a analizar.
      *
-     * @return {jf.tokenizer.List} Listado de tokens encontrados.
+     * @return {jf.Node} Primer token encontrados.
      */
     parse(text)
     {
-        let _lastToken;
-        const _tokens = this.tokens;
-        _tokens.clear();
+        let _lastNode;
         for (const _char of text)
         {
             const _token = new tokens[_char in tokens ? _char : ''](_char);
-            if (!_lastToken || !_lastToken.merge(_token))
+            if (_lastNode)
             {
-                _tokens.push(_token);
-                _lastToken = _token;
+                if (!_lastNode.data.merge(_token))
+                {
+                    const _node = new jfNode(_token);
+                    _node.after(_lastNode);
+                    _lastNode = _node;
+                }
+            }
+            else
+            {
+                this.first = _lastNode = new jfNode(_token);
             }
         }
+        this.last = _lastNode;
 
-        return _tokens;
+        return this.first;
     }
 
     /**
@@ -91,6 +142,12 @@ module.exports = class Tokenizer
      */
     toString()
     {
-        return this.tokens.map(token => token.value).join('');
+        const _chars = [];
+        for (const _node of this)
+        {
+            _chars.push(_node.data);
+        }
+
+        return _chars.join('');
     }
 };

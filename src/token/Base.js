@@ -52,15 +52,19 @@ module.exports = class Base
      * Vuelca por pantalla el contenido del token.
      *
      * @param {number} length Longitud del nombre del token.
+     * @param {string} sep    Separador de las columnas.
      */
-    dump(length = 10)
+    dump(length = 10, sep = ' | ')
     {
-        console.log(
-            '%s | %s | %s',
+        const _columns = [
             (this.type + ' '.repeat(length)).substr(0, length),
-            JSON.stringify(this.value),
-            JSON.stringify(this.description)
-        );
+            JSON.stringify(this.value)
+        ];
+        if (this.description)
+        {
+            _columns.push(JSON.stringify(this.description));
+        }
+        console.log(_columns.join(sep));
     }
 
     /**

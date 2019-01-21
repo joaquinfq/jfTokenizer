@@ -6,7 +6,7 @@ const Base = require('./Base');
  * @class     jf.tokenizer.token.Word
  * @extends   jf.tokenizer.token.Base
  */
-module.exports = class Word extends Base
+class Word extends Base
 {
     /**
      * @override
@@ -15,4 +15,7 @@ module.exports = class Word extends Base
     {
         return 'abcdefghijklmnopqrstuvwxyzáéíóúäëïöüàèìòùâêîôûABCDEFGHIJKLMNOPQRSTUVWXYZÁÉÍÓÚÄËÏÖÜÀÈÌÒÙÂÊÎÔÛ';
     }
-};
+}
+//------------------------------------------------------------------------------
+Word.register();
+module.exports = Word;

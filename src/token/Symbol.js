@@ -6,7 +6,7 @@ const Base = require('./Base');
  * @class     jf.tokenizer.token.Symbol
  * @extends   jf.tokenizer.token.Base
  */
-module.exports = class Symbol extends Base
+class Symbol extends Base
 {
     /**
      * @override
@@ -15,4 +15,7 @@ module.exports = class Symbol extends Base
     {
         return '{}[]<>(),.;:_^"\'\\·$%&/=¿?¡!|@#~/*-+`€';
     }
-};
+}
+//------------------------------------------------------------------------------
+Symbol.register();
+module.exports = Symbol;

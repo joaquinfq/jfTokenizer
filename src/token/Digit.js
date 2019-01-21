@@ -6,7 +6,7 @@ const Base = require('./Base');
  * @class     jf.tokenizer.token.Digit
  * @extends   jf.tokenizer.token.Base
  */
-module.exports = class Digit extends Base
+class Digit extends Base
 {
     /**
      * @override
@@ -15,4 +15,7 @@ module.exports = class Digit extends Base
     {
         return '0123456789';
     }
-};
+}
+//------------------------------------------------------------------------------
+Digit.register();
+module.exports = Digit;

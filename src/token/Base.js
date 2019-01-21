@@ -1,10 +1,12 @@
+const factory = require('jf-factory').i('tokens');
+const jfNode  = require('jf-node');
 /**
  * Clase base para los tokens.
  *
  * @namespace jf.tokenizer.token
  * @class     jf.tokenizer.token.Base
  */
-module.exports = class Base
+class Base extends jfNode
 {
     /**
      * Constante que define los tipos de caracteres que forman parte del token.
@@ -19,18 +21,14 @@ module.exports = class Base
     /**
      * Constructor de la clase.
      *
-     * @param {string} value       Valor del token.
-     * @param {string} description Descripción relacionada con el valor del token.
+     * @param {string}  value    Valor del token.
+     * @param {string}  data     Datos relacionados con el valor del token.
+     * @param {jf.Node} previous Nodo anterior al actual.
+     * @param {jf.Node} next     Nodo siguiente al actual.
      */
-    constructor(value, description = '')
+    constructor(value, data = '', previous = null, next = null)
     {
-        /**
-         * Descripción relacionada con el valor del token.
-         *
-         * @property description
-         * @type     {string}
-         */
-        this.description = description;
+        super(data, previous, next);
         /**
          * Tipo de token.
          * Por defecto, el nombre de la clase.
@@ -60,9 +58,9 @@ module.exports = class Base
             (this.type + ' '.repeat(length)).substr(0, length),
             JSON.stringify(this.value)
         ];
-        if (this.description)
+        if (this.data)
         {
-            _columns.push(JSON.stringify(this.description));
+            _columns.push(JSON.stringify(this.data));
         }
         console.log(_columns.join(sep));
     }
@@ -87,10 +85,35 @@ module.exports = class Base
     }
 
     /**
+     * Registra el token en la factoría.
+     *
+     * AVISO: El orden en el que se registran los tokens puede afectar al resultado.
+     */
+    static register()
+    {
+        const _chars = this.CHARS;
+        if (_chars)
+        {
+            _chars.split('').forEach(
+                char => factory.register(char, this)
+            );
+        }
+        else
+        {
+            // Clase a usar por defecto cuando no se encuentre una clase para
+            // el carácter especificado.
+            factory.register('', this);
+        }
+    }
+
+    /**
      * @override
      */
     toString()
     {
         return this.value;
     }
-};
+}
+//------------------------------------------------------------------------------
+Base.register();
+module.exports = Base;

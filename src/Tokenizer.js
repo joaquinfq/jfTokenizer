@@ -1,13 +1,11 @@
-const jfNode               = require('jf-node');
-const jfTokenizerTokenBase = require('./token/Base');
+// Registramos el token base por defecto.
+require('./token/Base');
 /**
- * Listado de clases de tokens registradas.
+ * Factoría de tokens.
  *
  * @type {object}
  */
-const tokens               = {
-    '' : jfTokenizerTokenBase
-};
+const factory = require('jf-factory').i('tokens');
 /**
  * Convierte un texto en tokens.
  *
@@ -44,15 +42,15 @@ module.exports = class Tokenizer
      */
     [Symbol.iterator]()
     {
-        let _node = this.first;
+        let _token = this.first;
 
         return {
             next()
             {
-                let _current = _node;
-                if (_node)
+                let _current = _token;
+                if (_token)
                 {
-                    _node = _node.next;
+                    _token = _token.next;
                 }
 
                 return {
@@ -68,9 +66,9 @@ module.exports = class Tokenizer
      */
     dump()
     {
-        for (const _node of this)
+        for (const _token of this)
         {
-            _node.data.dump(10);
+            _token.dump(10);
         }
     }
 
@@ -83,58 +81,27 @@ module.exports = class Tokenizer
      */
     parse(text)
     {
-        let _lastNode;
+        let _lastToken;
         for (const _char of text)
         {
-            const _token = new tokens[_char in tokens ? _char : ''](_char);
-            if (_lastNode)
+            const _token = factory.create(_char, _char) ||
+                           factory.create('', _char);
+            if (_lastToken)
             {
-                if (!_lastNode.data.merge(_token))
+                if (!_lastToken.merge(_token))
                 {
-                    const _node = new jfNode(_token);
-                    _node.after(_lastNode);
-                    _lastNode = _node;
+                    _token.after(_lastToken);
+                    _lastToken = _token;
                 }
             }
             else
             {
-                this.first = _lastNode = new jfNode(_token);
+                this.first = _lastToken = _token;
             }
         }
-        this.last = _lastNode;
+        this.last = _lastToken;
 
         return this.first;
-    }
-
-    /**
-     * Registra una clase de token.
-     *
-     * AVISO: El orden en el que se registran los tokens puede afectar al resultado.
-     *
-     * @param {jf.tokenizer.token.Base} Token Referencia de la clase a registrar.
-     */
-    static register(Token)
-    {
-        if (jfTokenizerTokenBase.isPrototypeOf(Token))
-        {
-            const _chars = Token.CHARS;
-            if (_chars)
-            {
-                _chars.split('').forEach(
-                    char => tokens[char] = Token
-                );
-            }
-            else
-            {
-                // Clase a usar por defecto cuando no se encuentre una clase para
-                // el carácter especificado.
-                tokens[''] = Token;
-            }
-        }
-        else
-        {
-            throw new Error('Se deben registrar clases que extiendan de jf.tokenizer.token.Base');
-        }
     }
 
     /**
@@ -143,9 +110,9 @@ module.exports = class Tokenizer
     toString()
     {
         const _chars = [];
-        for (const _node of this)
+        for (const _token of this)
         {
-            _chars.push(_node.data);
+            _chars.push(_token);
         }
 
         return _chars.join('');

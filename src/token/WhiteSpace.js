@@ -6,7 +6,7 @@ const Base = require('./Base');
  * @class     jf.tokenizer.token.WhiteSpace
  * @extends   jf.tokenizer.token.Base
  */
-module.exports = class WhiteSpace extends Base
+class WhiteSpace extends Base
 {
     /**
      * @override
@@ -15,4 +15,7 @@ module.exports = class WhiteSpace extends Base
     {
         return ' \t';
     }
-};
+}
+//------------------------------------------------------------------------------
+WhiteSpace.register();
+module.exports = WhiteSpace;

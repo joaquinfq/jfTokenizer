@@ -6,7 +6,7 @@ const Base = require('./Base');
  * @class     jf.tokenizer.token.NewLine
  * @extends   jf.tokenizer.token.Base
  */
-module.exports = class NewLine extends Base
+class NewLine extends Base
 {
     /**
      * @override
@@ -15,4 +15,7 @@ module.exports = class NewLine extends Base
     {
         return '\r\n';
     }
-};
+}
+//------------------------------------------------------------------------------
+NewLine.register();
+module.exports = NewLine;

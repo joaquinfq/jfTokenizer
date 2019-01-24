@@ -73,6 +73,32 @@ module.exports = class Tokenizer
     }
 
     /**
+     * Agrupa los nodos según la propiedad especificada.
+     *
+     * @param {string} property Nombre de la propiedad a usar para agrupar los nodos.
+     *
+     * @return {object} Nodos agrupados.
+     */
+    groupBy(property = 'value')
+    {
+        const _groups = {};
+        for (const _node of this)
+        {
+            const _name = _node[property];
+            if (_name in _groups)
+            {
+                _groups[_name].push(_node);
+            }
+            else
+            {
+                _groups[_name] = [_node];
+            }
+        }
+
+        return _groups;
+    }
+
+    /**
      * Analiza un texto y lo convierte en tokens.
      *
      * @param {string} text Texto a analizar.
@@ -84,8 +110,8 @@ module.exports = class Tokenizer
         let _lastToken;
         for (const _char of text)
         {
-            const _token = factory.create(_char, _char) ||
-                           factory.create('', _char);
+            const _token = factory.create(_char, { value : _char }) ||
+                           factory.create('',    { value : _char });
             if (_lastToken)
             {
                 if (!_lastToken.merge(_token))

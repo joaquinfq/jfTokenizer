@@ -19,16 +19,11 @@ class Base extends jfNode
     }
 
     /**
-     * Constructor de la clase.
-     *
-     * @param {string}  value    Valor del token.
-     * @param {string}  data     Datos relacionados con el valor del token.
-     * @param {jf.Node} previous Nodo anterior al actual.
-     * @param {jf.Node} next     Nodo siguiente al actual.
+     * @override
      */
-    constructor(value, data = '', previous = null, next = null)
+    constructor(config)
     {
-        super(data, previous, next);
+        super(config);
         /**
          * Tipo de token.
          * Por defecto, el nombre de la clase.
@@ -37,13 +32,6 @@ class Base extends jfNode
          * @type     {string}
          */
         this.type = this.constructor.name;
-        /**
-         * El valor del token.
-         *
-         * @property value
-         * @type     {string}
-         */
-        this.value = value;
     }
 
     /**
